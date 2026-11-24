@@ -1,111 +1,290 @@
+@config "../tailwind.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  color: #123f5b;
+  background: #dff4ff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  scroll-padding-top: 7rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+* {
   box-sizing: border-box;
 }
 
+html {
+  min-width: 320px;
+  scroll-behavior: auto;
+}
+
 body {
+  min-width: 320px;
+  min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  background: linear-gradient(180deg, #e8f8ff 0%, #c9eeff 48%, #9cddfa 100%);
+  background-attachment: fixed;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  border-radius: 1.25rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid #fb7185;
+  outline-offset: 4px;
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+h2,
+h3,
+.font-heading,
+.font-romantic {
+  font-family: "Fredoka", ui-rounded, system-ui, sans-serif;
+  letter-spacing: -0.025em;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+::selection {
+  background: #fda4af;
+  color: #0c4a6e;
+}
+
+.sky-page {
+  isolation: isolate;
+  background: linear-gradient(180deg, #e8f8ff 0%, #c9eeff 48%, #9cddfa 100%);
+  background-attachment: fixed;
+}
+
+.flow-section {
+  position: relative;
+}
+
+.flow-section + .flow-section {
+  margin-top: -5rem;
+}
+
+.sky-cloud-layer {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+}
+
+.cloud {
+  position: absolute;
+  width: 150px;
+  height: 48px;
+  border-radius: 100px;
+  background: rgb(255 255 255 / 0.78);
+  filter: blur(1px);
+  opacity: 0.8;
+  will-change: transform;
+}
+
+.cloud::before,
+.cloud::after {
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+  content: "";
+}
+
+.cloud::before {
+  top: -35px;
+  left: 20px;
+  width: 75px;
+  height: 75px;
+}
+
+.cloud::after {
+  top: -45px;
+  right: 20px;
+  width: 90px;
+  height: 90px;
+}
+
+.cloud-one {
+  top: 14%;
+  left: -190px;
+  animation: cloud-drift 50s linear infinite;
+}
+
+.cloud-two {
+  top: 39%;
+  left: -230px;
+  transform: scale(0.78);
+  animation: cloud-drift 64s linear -18s infinite;
+}
+
+.cloud-three {
+  top: 68%;
+  left: -180px;
+  transform: scale(1.12);
+  animation: cloud-drift 58s linear -31s infinite;
+}
+
+.cloud-four {
+  top: 87%;
+  left: -230px;
+  transform: scale(0.66);
+  animation: cloud-drift 72s linear -40s infinite;
+}
+
+.cloud-static-one {
+  top: 16%;
+  left: 6%;
+  animation: none;
+}
+
+.cloud-static-two {
+  top: 42%;
+  right: 5%;
+  left: auto;
+  animation: none;
+}
+
+.cloud-static-three {
+  top: 72%;
+  left: 9%;
+  animation: none;
+}
+
+.cloud-static-four {
+  top: 88%;
+  right: 8%;
+  left: auto;
+  animation: none;
+}
+
+@keyframes cloud-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: calc(100vw + 430px) 0;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+.heart-particle {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  color: #fb7185;
+  animation: heart-float 1.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes heart-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.5) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-55px) scale(1.08) rotate(12deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-125px) scale(0.7) rotate(-12deg);
   }
 }
-p {
-  margin: 0;
+
+.polaroid {
+  padding: 0.8rem 0.8rem 1.5rem;
+  border-radius: 1.75rem;
+  background: rgb(255 255 255 / 0.88);
+  box-shadow: 0 16px 38px rgb(12 74 110 / 0.12);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+img {
+  border-radius: 1.5rem;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.loading-heart {
+  animation: heartbeat 1s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+.timeline-line {
+  background: linear-gradient(to bottom, #38bdf8, #fb7185);
+  opacity: 0.55;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e8f8ff;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: #7dd3fc;
+}
+
+@media (hover: hover) {
+  .polaroid:hover {
+    transform: translateY(-8px) rotate(-1deg);
+    box-shadow: 0 22px 46px rgb(12 74 110 / 0.18);
+  }
+}
+
+@media (max-width: 600px) {
+  .cloud {
+    transform: scale(0.7);
+  }
+
+  .flow-section + .flow-section {
+    margin-top: -3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
