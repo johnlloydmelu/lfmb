@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Heart, ImagePlus } from "lucide-react";
@@ -8,15 +7,125 @@ import Lightbox from "./Lightbox";
 import BookBinding from "./BookBinding";
 import PageLeaf from "./PageLeaf";
 import SectionFlow from "./SectionFlow";
+import ScrollReveal from "./ScrollReveal";
+
+const quotes = [
+  "I love you for every moment, every memory, and every dream we share.",
+  "You make ordinary days feel like my favorite memories.",
+  "With you, even the quiet moments feel full of meaning.",
+  "I would choose you in every lifetime and every story.",
+  "Thank you for being my favorite person and my safest place.",
+  "Somehow, you make my whole world feel softer.",
+  "My happiest place will always be wherever you are.",
+  "You are the sweetest part of every day I get to live.",
+  "I hope we keep collecting little moments like this forever.",
+  "Loving you feels like coming home after a long day.",
+  "You turn simple days into stories I never want to forget.",
+  "My heart is happiest when it is making memories with you.",
+  "Every version of my future is better with you in it.",
+  "You are my favorite hello and the person I never want to say goodbye to.",
+  "The best thing about this memory is that I got to share it with you.",
+  "I still get butterflies knowing I get to call you mine.",
+  "If I could pause time, I would keep moments like this with you.",
+  "You make me grateful for the life we are building together.",
+  "No matter how much time passes, you will always be my favorite part.",
+  "Here is another little proof that loving you is my favorite adventure.",
+];
+
+const PHOTOS_PER_SPREAD = 3;
+const photoTilts = ["-rotate-2", "rotate-2", "-rotate-1"];
+const photoTapes = ["bg-pink-200/85", "bg-sky-200/85", "bg-amber-100/90"];
+
+/* ---------------- LEFT PAGE: photo collage ---------------- */
+
+interface CollagePageProps {
+  items: Memory[];
+  start: number;
+  pageNumber: number;
+  getImageUrl: (path: string) => string;
+  onOpen: (index: number) => void;
+}
+
+function CollagePage({ items, start, pageNumber, getImageUrl, onOpen }: CollagePageProps) {
+  const count = items.length;
+  const spanClass = (index: number) =>
+    count === 1 ? "" : count === 2 ? "row-span-2" : index === 0 ? "row-span-2" : "";
+
+  return (
+    <div className="book-paper book-page-left absolute inset-0 flex items-center justify-center p-3 sm:p-7">
+      <div
+        className={`grid h-[300px] w-full max-w-[26rem] gap-2.5 sm:h-[400px] sm:gap-4 ${
+          count === 1 ? "grid-cols-1 grid-rows-1" : "grid-cols-2 grid-rows-2"
+        }`}
+      >
+        {items.map((memory, index) => (
+          <button
+            key={memory.id}
+            type="button"
+            onClick={() => onOpen(start + index)}
+            aria-label={`Open memory ${start + index + 1}`}
+            className={`group relative h-full w-full rounded-md bg-white p-1.5 pb-3 shadow-[0_8px_18px_rgba(60,40,20,0.28)] transition duration-300 hover:z-10 hover:rotate-0 hover:scale-[1.04] sm:p-2 sm:pb-6 ${photoTilts[index % 3]} ${spanClass(index)}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute -top-2 left-1/2 z-10 h-3.5 w-10 -translate-x-1/2 -rotate-3 rounded-[2px] shadow-sm sm:h-4 sm:w-14 ${photoTapes[index % 3]}`}
+            />
+            <img
+              src={getImageUrl(memory.image_path)}
+              alt={memory.caption}
+              loading="lazy"
+              decoding="async"
+              className="memory-book-photo h-full w-full rounded-sm object-cover"
+            />
+            <Heart
+              size={12}
+              fill="currentColor"
+              className="absolute bottom-1.5 left-1/2 hidden -translate-x-1/2 text-skyLove-pink opacity-80 sm:block"
+            />
+          </button>
+        ))}
+      </div>
+      <span className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.3em] text-amber-900/40 sm:bottom-3 sm:text-xs">
+        — {pageNumber} —
+      </span>
+    </div>
+  );
+}
+
+/* ---------------- RIGHT PAGE: little note ---------------- */
+
+function NotePage({ quote, pageNumber }: { quote: string; pageNumber: number }) {
+  return (
+    <div className="book-paper book-lined book-page-right absolute inset-0 flex items-center justify-center overflow-hidden p-3 sm:p-8">
+      <span className="book-ribbon" aria-hidden="true" />
+      <span className="absolute left-6 top-5 rotate-[-12deg] text-2xl text-skyLove-pink/70 sm:left-10 sm:top-8 sm:text-3xl" aria-hidden="true">♥</span>
+      <span className="absolute bottom-10 right-8 rotate-12 text-lg text-sky-300 sm:text-xl" aria-hidden="true">✦</span>
+      <span className="absolute bottom-12 left-8 -rotate-12 text-base text-skyLove-softPink sm:text-lg" aria-hidden="true">✦</span>
+
+      <div className="relative flex max-w-sm flex-col items-center rounded-[1.75rem] border-2 border-dashed border-skyLove-softPink/70 bg-white/75 px-4 py-5 text-center shadow-[0_12px_24px_rgba(12,74,110,0.1)] sm:rounded-[2rem] sm:px-9 sm:py-9">
+        <div className="book-heart mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-skyLove-pink/15 shadow-[0_0_0_8px_rgba(251,113,133,0.07),0_10px_22px_rgba(251,113,133,0.22)] sm:mb-5 sm:h-28 sm:w-28">
+          <Heart
+            fill="currentColor"
+            strokeWidth={1.5}
+            className="h-8 w-8 text-skyLove-pink drop-shadow-[0_5px_5px_rgba(190,50,80,0.22)] sm:h-[70px] sm:w-[70px]"
+          />
+        </div>
+        <p className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.28em] text-sky-500 sm:mb-4 sm:text-xs">A little note</p>
+        <p className="font-heading text-sm font-medium leading-snug text-skyLove-dark sm:text-2xl sm:leading-relaxed">“{quote}”</p>
+        <span className="mt-3 block text-xl text-skyLove-pink sm:mt-5 sm:text-2xl">♡</span>
+      </div>
+
+      <span className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.3em] text-amber-900/40 sm:bottom-3 sm:text-xs">
+        — {pageNumber} —
+      </span>
+    </div>
+  );
+}
+
+/* ---------------- GALLERY ---------------- */
 
 export default function Gallery() {
-  const quotes = [
-    "I love you for every moment, every memory, and every dream we share.",
-    "You make ordinary days feel like my favorite memories.",
-    "With you, every little moment becomes something beautiful.",
-    "I would choose you in every lifetime and every story.",
-    "Thank you for being my favorite person and my safest place.",
-  ];
+  const shouldReduceMotion = useReducedMotion();
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,8 +134,6 @@ export default function Gallery() {
   const [bookDirection, setBookDirection] = useState<1 | -1>(1);
   const [turnTarget, setTurnTarget] = useState<number | null>(null);
   const isFlipping = turnTarget !== null;
-
-  const shouldReduceMotion = useReducedMotion();
 
   const loadMemories = useCallback(async () => {
     const { data, error: fetchError } = await supabase
@@ -132,38 +239,33 @@ export default function Gallery() {
       className="relative px-5 py-16 sm:px-10 sm:py-20"
     >
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-14 text-center"
-        >
+        <ScrollReveal className="mb-14 text-center">
           <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.22em] text-sky-700 sm:text-base">
-            A Life with you
+            Photograph with my cutie baby
           </p>
 
           <h2 className="font-heading text-4xl font-semibold text-skyLove-dark sm:text-6xl">
-            Our Beautiful Memories
+            Our Moment Together
           </h2>
 
           <p className="mx-auto mt-5 max-w-xl leading-7 text-sky-900">
-            Every picture 
+            I love you in every pages
           </p>
 
           <Heart
             className="mx-auto mt-5 text-skyLove-pink"
             fill="currentColor"
           />
-        </motion.div>
+        </ScrollReveal>
 
         {loading && (
-          <p className="py-12 text-center text-sky-800">
+          <ScrollReveal className="py-12 text-center text-sky-800">
             Loading our beautiful memories...
-          </p>
+          </ScrollReveal>
         )}
 
         {error && (
-          <div className="py-12 text-center">
+          <ScrollReveal className="py-12 text-center">
             <p className="text-red-600">{error}</p>
 
             <button
@@ -173,11 +275,11 @@ export default function Gallery() {
             >
               Try again
             </button>
-          </div>
+          </ScrollReveal>
         )}
 
         {!loading && !error && memories.length === 0 && (
-          <div className="rounded-3xl border-2 border-dashed border-sky-300 bg-white/60 px-5 py-16 text-center">
+          <ScrollReveal className="rounded-3xl border-2 border-dashed border-sky-300 bg-white/60 px-5 py-16 text-center">
             <ImagePlus
               size={45}
               className="mx-auto mb-4 text-sky-500"
@@ -190,80 +292,172 @@ export default function Gallery() {
             <p className="mt-3 text-sky-700">
               Upload photos to the public.memories table or directly to the memories Storage bucket.
             </p>
-          </div>
+          </ScrollReveal>
         )}
 
         {!loading && !error && memories.length > 0 && (() => {
-          const baseRightIndex = bookIndex < memories.length - 1 ? bookIndex + 1 : Math.max(0, bookIndex - 1);
-          const targetIndex = turnTarget ?? baseRightIndex;
-          const quote = quotes[bookIndex % quotes.length];
-          const collage = Array.from({ length: Math.min(3, memories.length) }, (_, offset) => memories[(bookIndex + offset) % memories.length]);
-          const moveBook = (step: number) => {
-            if (isFlipping) return;
-            const nextIndex = bookIndex + (step > 0 ? 3 : -3);
-            if (nextIndex < 0 || nextIndex >= memories.length) return;
-            setBookDirection(step > 0 ? 1 : -1);
-            setTurnTarget(nextIndex);
+          const spreadCount = Math.ceil(memories.length / PHOTOS_PER_SPREAD);
+          const lastSpread = spreadCount - 1;
+          const spread = Math.min(Math.floor(bookIndex / PHOTOS_PER_SPREAD), lastSpread);
+          const base = spread * PHOTOS_PER_SPREAD;
+          const target = turnTarget ?? base;
+
+          // While a page turns, the page UNDER the leaf already shows the new content
+          const leftStart = isFlipping && bookDirection < 0 ? target : base;
+          const rightStart = isFlipping && bookDirection > 0 ? target : base;
+
+          const itemsOf = (start: number) => memories.slice(start, start + PHOTOS_PER_SPREAD);
+          const quoteOf = (start: number) => {
+            const spreadIndex = Math.floor(start / PHOTOS_PER_SPREAD);
+            return quotes[spreadIndex] ?? `Another page, another memory I will always treasure with you — ${spreadIndex + 1}.`;
+          };
+          const pageNumber = (start: number, side: 0 | 1) => (start / PHOTOS_PER_SPREAD) * 2 + 1 + side;
+
+          const goTo = (nextSpread: number) => {
+            if (isFlipping || nextSpread === spread || nextSpread < 0 || nextSpread > lastSpread) return;
+            setBookDirection(nextSpread > spread ? 1 : -1);
+            setTurnTarget(nextSpread * PHOTOS_PER_SPREAD);
+          };
+
+          const finishTurn = () => {
+            setBookIndex(target);
+            setTurnTarget(null);
           };
 
           return (
-            <div className="mx-auto max-w-5xl">
-              <div className="relative rounded-[1.5rem] bg-[#5b3824] p-3 shadow-[0_24px_50px_rgba(12,74,110,0.25)] sm:p-5">
-                <BookBinding variant="spiral" />
-                <div className="relative flex min-h-[360px] overflow-hidden rounded-xl bg-[#f8f0df] shadow-inner sm:min-h-[480px]" style={{ perspective: 2000 }}>
-                    <div className="relative flex w-1/2 items-center justify-center bg-[#eee2c9] p-3 shadow-[inset_-12px_0_20px_rgba(80,60,30,0.14)] sm:p-8">
-                      <span className="pointer-events-none absolute left-7 top-5 z-10 h-5 w-20 -rotate-6 bg-skyLove-softPink/70 shadow-sm" />
-                      <span className="pointer-events-none absolute bottom-5 right-7 z-10 h-5 w-20 rotate-6 bg-sky-200/80 shadow-sm" />
-                      <div className="grid w-full grid-cols-2 gap-2">
-                        {collage.map((memory, index) => (
-                          <button key={memory.id} type="button" onClick={() => setSelectedIndex((bookIndex + index) % memories.length)} aria-label={`Open memory ${bookIndex + index + 1}`} className={`overflow-hidden rounded-lg shadow-lg ${index === 0 ? "row-span-2" : ""}`}>
-                            <img src={getImageUrl(memory.image_path)} alt={memory.caption} className={`h-40 w-full object-cover transition-transform duration-300 hover:scale-105 sm:h-52 ${index === 0 ? "h-[328px] sm:h-[428px]" : ""}`} />
-                          </button>
-                        ))}
-                      </div>
+            <ScrollReveal className="mx-auto max-w-5xl" distance={34}>
+              <div style={{ perspective: 1800 }}>
+                <motion.div
+                  className="relative isolate"
+                  initial={shouldReduceMotion ? false : { opacity: 0, rotateX: 16, scale: 0.94 }}
+                  whileInView={{ opacity: 1, rotateX: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {/* LEATHER COVER */}
+                  <div className="book-cover relative rounded-[1.5rem] p-3 sm:p-5">
+                    <span className="book-corner left-0 top-0" aria-hidden="true" />
+                    <span className="book-corner right-0 top-0 rotate-90" aria-hidden="true" />
+                    <span className="book-corner bottom-0 right-0 rotate-180" aria-hidden="true" />
+                    <span className="book-corner bottom-0 left-0 -rotate-90" aria-hidden="true" />
+
+                    <BookBinding variant="spiral" isFlipping={isFlipping} />
+
+                    {/* PAGES (with stacked paper edge) */}
+                    <div className="book-stack relative rounded-xl">
+                      <motion.div
+                        className="book-pages relative flex min-h-[360px] overflow-hidden rounded-xl sm:min-h-[480px]"
+                        style={{ perspective: 2200, touchAction: "pan-y" }}
+                        onPanEnd={(_, info) => {
+                          if (Math.abs(info.offset.x) < 60 || Math.abs(info.offset.x) < Math.abs(info.offset.y)) return;
+                          goTo(spread + (info.offset.x < 0 ? 1 : -1));
+                        }}
+                      >
+                        <div className="relative w-1/2">
+                          <CollagePage
+                            items={itemsOf(leftStart)}
+                            start={leftStart}
+                            pageNumber={pageNumber(leftStart, 0)}
+                            getImageUrl={getImageUrl}
+                            onOpen={setSelectedIndex}
+                          />
+                        </div>
+                        <div className="relative w-1/2">
+                          <NotePage quote={quoteOf(rightStart)} pageNumber={pageNumber(rightStart, 1)} />
+                        </div>
+
+                        {/* spine shading */}
+                        <span className="book-gutter pointer-events-none absolute inset-y-0 left-1/2 z-30 w-12 -translate-x-1/2 sm:w-16" aria-hidden="true" />
+
+                        {isFlipping && bookDirection > 0 && (
+                          <PageLeaf
+                            key={`next-${target}`}
+                            direction="next"
+                            front={<NotePage quote={quoteOf(base)} pageNumber={pageNumber(base, 1)} />}
+                            back={
+                              <CollagePage
+                                items={itemsOf(target)}
+                                start={target}
+                                pageNumber={pageNumber(target, 0)}
+                                getImageUrl={getImageUrl}
+                                onOpen={setSelectedIndex}
+                              />
+                            }
+                            onComplete={finishTurn}
+                          />
+                        )}
+                        {isFlipping && bookDirection < 0 && (
+                          <PageLeaf
+                            key={`prev-${target}`}
+                            direction="prev"
+                            front={
+                              <CollagePage
+                                items={itemsOf(base)}
+                                start={base}
+                                pageNumber={pageNumber(base, 0)}
+                                getImageUrl={getImageUrl}
+                                onOpen={setSelectedIndex}
+                              />
+                            }
+                            back={<NotePage quote={quoteOf(target)} pageNumber={pageNumber(target, 1)} />}
+                            onComplete={finishTurn}
+                          />
+                        )}
+                      </motion.div>
                     </div>
-                    <div className="relative flex w-1/2 items-center justify-center overflow-hidden bg-[#fffaf0] p-3 shadow-[inset_12px_0_20px_rgba(80,60,30,0.08)] sm:p-8">
-                      <span className="absolute left-8 top-8 rotate-[-12deg] text-3xl text-skyLove-pink/70">♥</span>
-                      <span className="absolute right-10 top-12 rotate-12 text-xl text-sky-300">✦</span>
-                      <span className="absolute bottom-10 left-12 -rotate-12 text-lg text-skyLove-softPink">✦</span>
-                      <div className="relative flex max-w-sm flex-col items-center rounded-[2rem] border-2 border-dashed border-skyLove-softPink/70 bg-white/65 px-6 py-7 text-center shadow-[0_12px_24px_rgba(12,74,110,0.08)] sm:px-10 sm:py-10">
-                        <motion.div
-                          animate={shouldReduceMotion ? undefined : { scale: [1, 1.1, 1], rotate: [0, -3, 3, 0] }}
-                          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-                          className="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-skyLove-pink/15 shadow-[0_0_0_10px_rgba(251,113,133,0.07),0_12px_25px_rgba(251,113,133,0.2)] sm:h-28 sm:w-28"
-                        >
-                          <Heart size={70} fill="currentColor" strokeWidth={1.5} className="text-skyLove-pink drop-shadow-[0_5px_5px_rgba(190,50,80,0.22)]" />
-                        </motion.div>
-                        <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.28em] text-sky-500">A little note for you</p>
-                        <p className="font-heading text-xl font-medium leading-relaxed text-skyLove-dark sm:text-3xl">“{quote}”</p>
-                        <span className="mt-5 block text-2xl text-skyLove-pink">♡</span>
-                      </div>
-                    </div>
-                    {isFlipping && bookDirection > 0 && (
-                      <PageLeaf
-                        direction="next"
-                        front={<div className="flex h-full items-center justify-center bg-[#eee2c9] p-5 text-center"><p className="font-heading text-xl leading-relaxed text-skyLove-dark">“{quote}”</p></div>}
-                        back={<div className="flex h-full items-center justify-center bg-[#eee2c9] p-5 text-center"><p className="font-heading text-xl leading-relaxed text-skyLove-dark">“{quotes[targetIndex % quotes.length]}”</p></div>}
-                        onComplete={() => { setBookIndex(targetIndex); setTurnTarget(null); }}
-                      />
-                    )}
-                    {isFlipping && bookDirection < 0 && (
-                      <PageLeaf
-                        direction="prev"
-                        front={<div className="flex h-full items-center justify-center bg-[#eee2c9] p-5"><div className="grid grid-cols-2 gap-2">{collage.map((memory) => <img key={memory.id} src={getImageUrl(memory.image_path)} alt="" className="h-32 w-24 rounded object-cover" />)}</div></div>}
-                        back={<div className="flex h-full items-center justify-center bg-[#eee2c9] p-5 text-center"><p className="font-heading text-xl leading-relaxed text-skyLove-dark">“{quotes[targetIndex % quotes.length]}”</p></div>}
-                        onComplete={() => { setBookIndex(targetIndex); setTurnTarget(null); }}
-                      />
-                    )}
-                </div>
+                  </div>
+                  <div className="book-floor-shadow" aria-hidden="true" />
+                </motion.div>
               </div>
-              {memories.length > 1 && (
-                <div className="mt-5 flex justify-center gap-4">
-                  <button type="button" disabled={isFlipping || bookIndex < 3} onClick={() => moveBook(-1)} aria-label="Previous three memories" className="rounded-full bg-white/80 p-3 text-skyLove-dark shadow-romantic hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={24} /></button>
-                  <button type="button" disabled={isFlipping || bookIndex + 3 >= memories.length} onClick={() => moveBook(1)} aria-label="Next three memories" className="rounded-full bg-white/80 p-3 text-skyLove-dark shadow-romantic hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"><ChevronRight size={24} /></button>
+
+              {/* CONTROLS */}
+              {spreadCount > 1 && (
+                <div className="mt-9 flex items-center justify-center gap-3 sm:gap-5">
+                  <button
+                    type="button"
+                    disabled={isFlipping || spread === 0}
+                    onClick={() => goTo(spread - 1)}
+                    aria-label="Previous pages"
+                    className="rounded-full bg-white/80 p-3 text-skyLove-dark shadow-romantic transition hover:-translate-y-0.5 hover:bg-white hover:text-skyLove-pink active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+
+                  <div className="flex items-center gap-3 rounded-full border border-white/70 bg-white/65 px-5 py-2.5 shadow-glass backdrop-blur-md">
+                    {spreadCount <= 8 &&
+                      Array.from({ length: spreadCount }, (_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          disabled={isFlipping}
+                          onClick={() => goTo(i)}
+                          aria-label={`Go to pages ${i * 2 + 1} and ${i * 2 + 2}`}
+                          aria-current={i === spread}
+                          className={`h-2.5 rounded-full transition-all duration-300 ${
+                            i === spread ? "w-7 bg-skyLove-pink" : "w-2.5 bg-sky-300 hover:bg-sky-400"
+                          }`}
+                        />
+                      ))}
+                    <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-sky-700">
+                      {spread + 1} / {spreadCount}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={isFlipping || spread >= lastSpread}
+                    onClick={() => goTo(spread + 1)}
+                    aria-label="Next pages"
+                    className="rounded-full bg-white/80 p-3 text-skyLove-dark shadow-romantic transition hover:-translate-y-0.5 hover:bg-white hover:text-skyLove-pink active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
                 </div>
               )}
-            </div>
+              {spreadCount > 1 && (
+                <p className="mt-3 text-center text-xs font-bold text-sky-700/80 sm:hidden">Swipe the book to turn the page</p>
+              )}
+            </ScrollReveal>
           );
         })()}
       </div>
