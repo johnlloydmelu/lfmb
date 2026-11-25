@@ -10,7 +10,8 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     const lenis = new Lenis({
       autoRaf: true,
       anchors: { offset: -96 },
-      lerp: 0.085,
+      lerp: 0.12,
+      wheelMultiplier: 0.9,
     });
 
     return () => lenis.destroy();

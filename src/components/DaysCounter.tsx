@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import SectionFlow from "./SectionFlow";
+import ScrollReveal from "./ScrollReveal";
 
 interface DaysCounterProps {
   anniversaryDate: string;
@@ -31,15 +32,19 @@ function calculateTime(dateString: string): TimeTogether | null {
 
   const [year, month, day] = parts;
 
-  const anniversary = new Date(year, month - 1, day);
+  const calendarDate = new Date(Date.UTC(year, month - 1, day));
 
   if (
-    anniversary.getFullYear() !== year ||
-    anniversary.getMonth() !== month - 1 ||
-    anniversary.getDate() !== day
+    calendarDate.getUTCFullYear() !== year ||
+    calendarDate.getUTCMonth() !== month - 1 ||
+    calendarDate.getUTCDate() !== day
   ) {
     return null;
   }
+
+  // The relationship date is official in Philippine time, regardless of the
+  // timezone of the device viewing the page.
+  const anniversary = new Date(`${dateString}T00:00:00+08:00`);
 
   const difference = Date.now() - anniversary.getTime();
 
@@ -86,11 +91,12 @@ export default function DaysCounter({
   return (
     <SectionFlow className="relative px-5 py-24 text-center">
       <div className="mx-auto max-w-4xl">
-        <Heart
+        <ScrollReveal>
+          <Heart
           size={35}
           fill="currentColor"
           className="mx-auto mb-5 text-skyLove-pink"
-        />
+          />
 
         <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.22em] text-sky-800 sm:text-base">
           Every second is special
@@ -100,13 +106,17 @@ export default function DaysCounter({
           Our Time Together
         </h2>
 
+        </ScrollReveal>
+
         {time ? (
           <>
-            <p className="mt-5 text-sky-800">
+            <ScrollReveal delay={0.12}>
+              <p className="mt-5 text-sky-800">
               And counting every beautiful moment...
-            </p>
+              </p>
+            </ScrollReveal>
 
-            <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <ScrollReveal delay={0.2} className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {values.map((item) => (
                 <div
                   key={item.label}
@@ -121,7 +131,7 @@ export default function DaysCounter({
                   </p>
                 </div>
               ))}
-            </div>
+            </ScrollReveal>
           </>
         ) : (
           <p className="mt-8 text-sky-800">
@@ -129,9 +139,11 @@ export default function DaysCounter({
           </p>
         )}
 
-        <p className="mt-10 font-romantic text-xl italic text-skyLove-dark">
-          Here's to every moment, and all the moments still to come.
-        </p>
+        <ScrollReveal delay={0.3}>
+          <p className="mt-10 font-romantic text-xl italic text-skyLove-dark">
+            Here&apos;s to every moment, and all the moments still to come.
+          </p>
+        </ScrollReveal>
       </div>
     </SectionFlow>
   );

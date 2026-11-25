@@ -33,7 +33,6 @@ body {
   font-size: 1.0625rem;
   line-height: 1.7;
   background: linear-gradient(180deg, #e8f8ff 0%, #c9eeff 48%, #9cddfa 100%);
-  background-attachment: fixed;
 }
 
 button,
@@ -75,13 +74,96 @@ h3,
 }
 
 .sky-page {
+  position: relative;
   isolation: isolate;
-  background: linear-gradient(180deg, #e8f8ff 0%, #c9eeff 48%, #9cddfa 100%);
-  background-attachment: fixed;
+  background:
+    radial-gradient(circle at 12% 12%, rgb(255 255 255 / 0.52), transparent 25rem),
+    radial-gradient(circle at 88% 46%, rgb(251 113 133 / 0.12), transparent 28rem),
+    linear-gradient(180deg, #e8f8ff 0%, #c9eeff 48%, #9cddfa 100%);
+}
+
+.sky-page::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-image: radial-gradient(rgb(12 74 110 / 0.09) 0.7px, transparent 0.7px);
+  background-size: 7px 7px;
+  content: "";
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.sky-page::after {
+  position: absolute;
+  z-index: 0;
+  top: 9rem;
+  left: 50%;
+  width: min(90vw, 72rem);
+  height: 34rem;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(255 255 255 / 0.32), transparent 68%);
+  content: "";
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .flow-section {
   position: relative;
+}
+
+.flow-section::before {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: min(70vw, 46rem);
+  height: 18rem;
+  border-radius: 999px;
+  background: radial-gradient(ellipse, rgb(255 255 255 / 0.3), transparent 68%);
+  content: "";
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.splash-screen {
+  background:
+    radial-gradient(circle at 50% 34%, rgb(255 255 255 / 0.62), transparent 18rem),
+    radial-gradient(circle at 14% 82%, rgb(251 113 133 / 0.18), transparent 20rem),
+    linear-gradient(145deg, #e0f2fe 0%, #bae6fd 48%, #7dd3fc 100%);
+}
+
+.splash-screen::before {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(12 74 110 / 0.1) 0.7px, transparent 0.7px);
+  background-size: 8px 8px;
+  content: "";
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.splash-stars {
+  position: absolute;
+  inset: 0;
+  color: rgb(255 255 255 / 0.8);
+  pointer-events: none;
+}
+
+.splash-star {
+  position: absolute;
+  animation: sparkle 3.4s ease-in-out infinite;
+}
+
+.splash-star-one { top: 18%; left: 18%; }
+.splash-star-two { top: 24%; right: 21%; animation-delay: 0.9s; }
+.splash-star-three { bottom: 23%; left: 27%; animation-delay: 1.7s; }
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.28; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.18) rotate(18deg); }
+}
+
+.splash-envelope {
+  transform-origin: center bottom;
 }
 
 .flow-section + .flow-section {
@@ -225,6 +307,15 @@ h3,
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
+.memory-book-shell {
+  contain: layout paint;
+}
+
+.memory-book-photo {
+  display: block;
+  backface-visibility: hidden;
+}
+
 img {
   border-radius: 1.5rem;
 }
@@ -278,6 +369,303 @@ img {
   }
 }
 
+/* Letter modal atmosphere */
+
+.letter-modal {
+  isolation: isolate;
+}
+
+/* Dreamy twilight backdrop: deep blue top -> rose glow behind the card */
+.letter-backdrop {
+  box-sizing: border-box;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 48%, rgb(251 113 133 / 0.34), transparent 52%),
+    radial-gradient(circle at 15% 10%, rgb(125 211 252 / 0.28), transparent 40%),
+    linear-gradient(180deg, rgb(7 50 84 / 0.7) 0%, rgb(30 64 120 / 0.58) 55%, rgb(131 24 67 / 0.5) 100%);
+}
+
+.letter-backdrop::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(12 74 110 / 0.22), rgb(251 113 133 / 0.12));
+  content: "";
+  pointer-events: none;
+}
+
+/* Slowly rotating light rays behind the card */
+.letter-rays {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 150vmax;
+  height: 150vmax;
+  background: repeating-conic-gradient(from 0deg, rgb(255 255 255 / 0.2) 0deg 5deg, transparent 5deg 20deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 38%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 38%);
+  animation: letter-spin 90s linear infinite;
+  will-change: transform;
+}
+
+/* Breathing pink + white glow */
+.letter-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(120vw, 60rem);
+  height: min(100vw, 46rem);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.38) 0%, rgb(251 113 133 / 0.32) 34%, transparent 68%);
+  transform: translate(-50%, -50%);
+  animation: letter-halo-breathe 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Soft solid clouds. Opacity lives on the element, so overlapping circles
+   merge into ONE clean cloud (no ugly see-through outlines). */
+.letter-cloud {
+  position: absolute;
+  left: -260px;
+  width: 150px;
+  height: 48px;
+  border-radius: 100px;
+  background: #fff;
+  opacity: 0.5;
+  filter: blur(1.5px);
+  animation: letter-cloud-pass 60s linear infinite;
+  will-change: transform;
+}
+
+.letter-cloud::before,
+.letter-cloud::after {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+}
+
+.letter-cloud::before { top: -34px; left: 20px; width: 75px; height: 75px; }
+.letter-cloud::after { top: -44px; right: 20px; width: 90px; height: 90px; }
+
+.letter-cloud-a { top: 12%; scale: 1.1; animation-duration: 55s; animation-delay: -12s; }
+.letter-cloud-b { top: 38%; scale: 0.7; opacity: 0.38; animation-duration: 75s; animation-delay: -40s; }
+.letter-cloud-c { top: 66%; scale: 1.3; opacity: 0.42; animation-duration: 68s; animation-delay: -5s; }
+.letter-cloud-d { top: 84%; scale: 0.8; animation-duration: 85s; animation-delay: -55s; }
+
+/* Twinkling stars */
+.letter-star {
+  position: absolute;
+  color: #fff;
+  text-shadow: 0 0 10px #fff, 0 0 22px rgb(125 211 252 / 0.95);
+  animation: letter-twinkle 3s ease-in-out infinite;
+}
+
+/* Hearts and sparkles floating up past the card */
+.letter-riser {
+  position: absolute;
+  bottom: -40px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px currentcolor);
+  opacity: 0;
+  animation: letter-rise var(--dur, 12s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+.letter-riser-blur {
+  filter: blur(2px) drop-shadow(0 0 8px currentcolor);
+}
+
+/* The card: pink glow + soft white ring */
+.letter-card {
+  box-shadow:
+    0 0 0 6px rgb(255 255 255 / 0.35),
+    0 0 60px 6px rgb(251 113 133 / 0.4),
+    0 30px 80px -20px rgb(7 50 84 / 0.6);
+}
+
+/* Decorations on the card corners */
+.letter-corner {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgb(251 113 133 / 0.85));
+  animation: letter-sway 4s ease-in-out infinite;
+}
+
+.letter-shimmer {
+  overflow: hidden;
+}
+
+.letter-shimmer::after {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: -30%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+  content: "";
+  opacity: 0;
+  transform: skewX(-18deg);
+  animation: letter-shimmer-sweep 5.5s ease-in-out 1.5s infinite;
+}
+
+@keyframes letter-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes letter-halo-breathe {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.93); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+@keyframes letter-cloud-pass {
+  from { translate: 0 0; }
+  to { translate: calc(100vw + 560px) 0; }
+}
+
+@keyframes letter-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.25) rotate(20deg); }
+}
+
+@keyframes letter-rise {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg); }
+  10% { opacity: 0.95; }
+  85% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate3d(var(--drift, 20px), -115vh, 0) scale(1.15) rotate(28deg); }
+}
+
+@keyframes letter-sway {
+  0%, 100% { transform: translateY(0) rotate(-8deg) scale(1); }
+  50% { transform: translateY(-6px) rotate(8deg) scale(1.15); }
+}
+
+@keyframes letter-shimmer-sweep {
+  0%, 66%, 100% { opacity: 0; transform: translateX(0) skewX(-18deg); }
+  72% { opacity: 0.75; }
+  86% { opacity: 0; transform: translateX(780%) skewX(-18deg); }
+}
+
+/* Hero atmosphere */
+
+/* Shimmering gradient name */
+.hero-gradient-text {
+  display: inline;
+  padding-bottom: 0.08em;
+  background-image: linear-gradient(100deg, #fb7185 0%, #f472b6 30%, #fecdd3 50%, #f472b6 70%, #fb7185 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 26px rgb(251 113 133 / 0.35));
+  animation: hero-shine 6s linear infinite;
+}
+
+/* Glow orbs behind everything */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: hero-orb 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Hearts floating up */
+.hero-rise {
+  position: absolute;
+  bottom: -30px;
+  line-height: 1;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px currentcolor);
+  animation: hero-rise var(--dur, 14s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+/* Sparkles around the name */
+.hero-twinkle {
+  color: #fff;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 0 10px #fff, 0 0 20px rgb(251 113 133 / 0.8);
+  animation: hero-twinkle 3s ease-in-out infinite;
+}
+
+/* Badge shimmer */
+.hero-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-badge::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.85) 50%, transparent 70%);
+  content: "";
+  transform: translateX(-120%);
+  animation: hero-sweep 4.5s ease-in-out 1.5s infinite;
+}
+
+/* CTA button: shimmer + pulsing ring */
+.hero-btn {
+  overflow: hidden;
+}
+
+.hero-btn::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgb(255 255 255 / 0.35) 50%, transparent 65%);
+  content: "";
+  transform: translateX(-120%);
+  animation: hero-sweep 3.6s ease-in-out 2s infinite;
+}
+
+.hero-btn-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid #fda4af;
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: hero-ring 2.6s ease-out infinite;
+}
+
+@keyframes hero-shine {
+  to { background-position: -220% 0; }
+}
+
+@keyframes hero-orb {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.8; }
+  50% { transform: translate3d(24px, -18px, 0) scale(1.12); opacity: 1; }
+}
+
+@keyframes hero-rise {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg); }
+  12% { opacity: 0.75; }
+  85% { opacity: 0.6; }
+  100% { opacity: 0; transform: translate3d(var(--drift, 20px), -105svh, 0) scale(1.1) rotate(24deg); }
+}
+
+@keyframes hero-twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.25) rotate(20deg); }
+}
+
+@keyframes hero-sweep {
+  0%, 55% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes hero-ring {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.28, 1.6); }
+}
+
+/* Keep the final motion fallback after all component-specific rules so it wins
+   the cascade, including rules defined later in this file. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -287,4 +675,278 @@ img {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .splash-star,
+  .letter-rays,
+  .letter-halo,
+  .letter-cloud,
+  .letter-star,
+  .letter-riser,
+  .letter-corner,
+  .letter-shimmer::after,
+  .hero-gradient-text,
+  .hero-orb,
+  .hero-rise,
+  .hero-twinkle,
+  .hero-badge::after,
+  .hero-btn::after,
+  .hero-btn-ring {
+    animation: none;
+  }
 }
+
+/* ============================================================
+   BOOK STYLES: paste at the BOTTOM of index.css,
+   ABOVE the final "@media (prefers-reduced-motion: reduce)" block.
+
+   You can also DELETE the old ".memory-book-shell { contain: ... }"
+   rule (no longer used). Keep ".memory-book-photo".
+   ============================================================ */
+
+/* ---------- Leather cover (navy + gold). Change the colors to restyle ---------- */
+.book-cover {
+  background:
+    radial-gradient(circle at 18% 8%, rgb(255 255 255 / 0.16), transparent 42%),
+    linear-gradient(145deg, #14537c 0%, #0c3a5c 55%, #082c47 100%);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.2),
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 30px 60px -18px rgb(8 44 71 / 0.55);
+}
+
+/* leather grain */
+.book-cover::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1.3px);
+  background-size: 4px 4px;
+  content: "";
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* gold stitching */
+.book-cover::after {
+  position: absolute;
+  inset: 6px;
+  border: 2px dashed rgb(253 230 168 / 0.55);
+  border-radius: 1.1rem;
+  content: "";
+  pointer-events: none;
+}
+
+/* gold corner protectors */
+.book-corner {
+  position: absolute;
+  z-index: 35;
+  width: 2.6rem;
+  height: 2.6rem;
+  background: linear-gradient(135deg, #fde7a8 0%, #d9a441 55%, #a9741f 100%);
+  border-top-left-radius: 1.5rem;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+}
+
+/* ---------- Pages ---------- */
+.book-stack {
+  box-shadow:
+    0 1px 0 #efe3c8,
+    0 2px 0 #e3d5b5,
+    0 3px 0 #f2e8d0,
+    0 4px 0 #dccdaa,
+    0 5px 0 #efe3c8,
+    0 6px 0 #d3c19a,
+    0 10px 14px rgb(0 0 0 / 0.3);
+}
+
+.book-pages {
+  background: #fbf4e4;
+}
+
+.book-paper {
+  background-color: #fbf4e4;
+  background-image: radial-gradient(rgb(120 90 50 / 0.06) 1px, transparent 1px);
+  background-size: 5px 5px;
+}
+
+/* notebook lines + pink margin */
+.book-lined {
+  background-image:
+    linear-gradient(90deg, transparent 13%, rgb(251 113 133 / 0.22) 13%, rgb(251 113 133 / 0.22) calc(13% + 1px), transparent calc(13% + 1px)),
+    repeating-linear-gradient(180deg, transparent 0 31px, rgb(125 190 230 / 0.2) 31px 32px),
+    radial-gradient(rgb(120 90 50 / 0.06) 1px, transparent 1px);
+  background-size: auto, auto, 5px 5px;
+}
+
+/* paper curves down into the spine */
+.book-page-left::after,
+.book-page-right::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.book-page-left::after {
+  background: linear-gradient(90deg, transparent 62%, rgb(80 55 25 / 0.16) 100%);
+}
+
+.book-page-right::after {
+  background: linear-gradient(270deg, transparent 62%, rgb(80 55 25 / 0.14) 100%);
+}
+
+/* dark crease down the middle */
+.book-gutter {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(70 45 20 / 0.1) 30%,
+    rgb(40 25 10 / 0.36) 50%,
+    rgb(70 45 20 / 0.1) 70%,
+    transparent 100%
+  );
+}
+
+/* pink ribbon bookmark */
+.book-ribbon {
+  position: absolute;
+  top: -2px;
+  right: 12%;
+  z-index: 5;
+  width: 1.4rem;
+  height: 4.2rem;
+  background: linear-gradient(180deg, #fb7185, #e11d48);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+}
+
+/* heartbeat: two quick thumps, then rest */
+.book-heart {
+  animation: book-heartbeat 2.8s ease-in-out infinite;
+}
+
+/* ---------- Binding rings ---------- */
+.book-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3.4rem;
+  height: 1.25rem;
+  border: 3px solid #e9c46a;
+  border-radius: 9999px;
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.85),
+    inset 0 -2px 2px rgb(120 80 10 / 0.35),
+    0 3px 4px rgb(0 0 0 / 0.35);
+  transform: translate(-50%, -50%);
+}
+
+.book-hole {
+  position: absolute;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: #3b2a14;
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.7);
+  transform: translateY(-50%);
+}
+
+/* ---------- Shadow on the "table" under the book ---------- */
+.book-floor-shadow {
+  position: absolute;
+  right: 6%;
+  bottom: -22px;
+  left: 6%;
+  z-index: -1;
+  height: 28px;
+  background: radial-gradient(ellipse, rgb(8 44 71 / 0.42), transparent 70%);
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+/* ---------- Photo viewer backdrop ---------- */
+.lightbox-backdrop {
+  background:
+    radial-gradient(circle at 50% 45%, rgb(251 113 133 / 0.22), transparent 55%),
+    rgb(7 40 66 / 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@keyframes book-heartbeat {
+  0%, 40%, 100% { transform: scale(1); }
+  10% { transform: scale(1.14); }
+  22% { transform: scale(1.04); }
+  32% { transform: scale(1.12); }
+}
+
+/* ------------------------------------------------------------
+   ALSO add ".book-heart" to your existing
+   "@media (prefers-reduced-motion: reduce)" list that has
+   "animation: none;", for example:
+
+  .book-heart,
+  .hero-gradient-text,
+  ... (rest of your list)
+------------------------------------------------------------ */
+/* ============================================================
+   ENVELOPE STYLES: paste at the BOTTOM of index.css,
+   ABOVE the final "@media (prefers-reduced-motion: reduce)" block.
+   ============================================================ */
+
+/* Both sides of the flap: hide whichever face points away from you,
+   so the outside shows when closed and the heart liner shows when open. */
+.env-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* The letter paper peeking out of the envelope */
+.env-paper {
+  background-color: #fffdf8;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 15px,
+    rgb(125 190 230 / 0.22) 15px 16px
+  );
+}
+
+/* Wax seal (a glossy, slightly irregular blob of red wax) */
+.env-seal {
+  background: radial-gradient(circle at 35% 30%, #ff9db0 0%, #f43f5e 45%, #9f1239 100%);
+  border-radius: 52% 48% 50% 50% / 50% 52% 48% 50%;
+  box-shadow:
+    inset 0 2px 3px rgb(255 255 255 / 0.4),
+    inset 0 -3px 5px rgb(0 0 0 / 0.3),
+    0 5px 10px rgb(120 10 40 / 0.45);
+}
+
+/* Hearts drifting up around the closed envelope */
+.env-rise {
+  position: absolute;
+  bottom: 22%;
+  line-height: 1;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px currentcolor);
+  animation: env-rise var(--dur, 8s) ease-in var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes env-rise {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg); }
+  15% { opacity: 0.85; }
+  80% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate3d(var(--drift, 12px), -170px, 0) scale(1.1) rotate(22deg); }
+}
+
+/* ------------------------------------------------------------
+   ALSO add ".env-rise" to your existing
+   "@media (prefers-reduced-motion: reduce)" list that has
+   "animation: none;", for example:
+
+  .env-rise,
+  .book-heart,
+  .hero-gradient-text,
+  ... (rest of your list)
+------------------------------------------------------------ */
